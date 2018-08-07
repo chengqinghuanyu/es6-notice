@@ -1,0 +1,170 @@
+<html>
+
+<head>
+
+</head>
+
+<body>
+    <script>
+        /*数组的解构*/
+        /*    let a = 1;
+           let b = 2;
+           let c = 3; */
+        /*
+        es6允许对象和数组依照某种模式进行赋值
+        */
+        let [a, b, c] = [1, 2, 3];
+        let [a1, [b1, c1], d1] = ['a', [{
+            a: 10
+        }, {
+            b: 20
+        }], 10];
+        console.log(a1, b1, c1, d1);
+
+        let [, , ps] = [10, 20, 30];
+        let [a2, , a3] = [15, '22', 30];
+        let [pd, mk, ...bg] = [20, 30, 40, 60, 100]
+        let [bl, bk, ...za] = [1];
+        /*解构不成功的话则变量的值就等于undefined
+            等号右边的是数组可以解析，如果等号右边不是数组就会解析错误
+            let [a]=null;
+            let [b]=undefined;
+            let [c]=false;
+            let [h]=NaN;
+            let [p]=1;
+        */
+        /*set结构的解析*/
+        let [x, y, z] = new Set(['a', 'b', 'c']);
+
+        /*结构的默认赋值*/
+        let [pk = true] = [];
+        /*结构中赋值*/
+        let [x = 1, y = x] = [1];
+        let [x = 1, y = x] = [1, 2];
+        let [x = 1, y = x] = [];
+        let [x = y, y = 1] = [] //y还没有赋值会报错
+        let [x = y, y = 1] = [1, 2] //不会报错
+
+
+
+        /**
+        对象的解构
+        */
+
+        let {
+            foo,
+            bar
+        } = {
+            foo: 'bak',
+            bar: '不卡'
+        };
+
+        /*对象的解构必须是变量名和属性一一对应才能取到值*/
+
+        let obj = {
+            hello: 'hello',
+            word: 'word'
+        };
+        let {
+            hello: m,
+            word: k
+        } = obj
+
+
+        let {
+            yes: pl,
+            pl: ol
+        } = {
+            yes: 'yes',
+            pl: 'ol'
+        }
+
+
+        const node = {
+            loc: {
+                start: {
+                    line: 1,
+                    comlun: 4
+                }
+            }
+        };
+        let {
+            loc,
+            loc: {
+                start
+            },
+            loc: {
+                start: {
+                    line: line,
+                    comlun: comlun
+                }
+            }
+        } = node
+
+
+        let klop = {},
+            mgkl = [];
+        ({
+            mikf: klop.prop,
+            bklo: mgkl[0]
+        } = {
+            mikf: '1www',
+            bklo: true
+        })
+        //上面代码将整个解构赋值语句，放在一个圆括号里面，就可以正确执行
+
+        let arr = [1, 2, 3];
+        let {
+            0: first,
+            [arr.length - 1]: last
+        } = arr;
+        //这里的0：first,[arr.length-1]:last取的是数组的下标
+
+        //字符串的解构
+        const mio = 'hello';
+
+        let [
+            b1,
+            b2,
+            b3
+        ] = mio;
+
+        //函数参数解构
+        function add([x, y]) {
+            return x + y
+        };
+        add([1, 3]);
+        [
+            [1, 2],
+            [
+                'p', 'k'
+            ]
+        ].map(([a, b]) =>
+            a + b
+        );
+        //函数解构默认赋值
+        function move({
+            x = 0,
+            y = 0
+        } = {}) {
+            return [x, y];
+        };
+        move({
+            x: 3,
+            y: 4
+        });
+        //解构中的圆括号，只能在赋值语句的非模式部分使用
+        //解构的用途
+        /*
+        1、出现在json解析中
+        2、出现在函数返回值中
+        3、出现在数据互换中
+        4、输入模块的指定方法
+        5、函数参数中
+        6、函数参数默认值
+        7、map遍历中
+        */
+    </script>
+</body>
+
+</html>

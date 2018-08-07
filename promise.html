@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>promise</title>
+</head>
+
+<body>
+    <script>
+        const promise = new Promise(function(res, rej) {
+            if (true) {
+                res(value);
+            } else {
+                rej(errror)
+            }
+        });
+        promise.then(function(value) {}, function(error) {})
+
+        //异步加载图片
+        function loadingImageAsync(url) {
+            return new Promise(function(res, rej) {
+                const img = new Image()
+                img.onload = function() {
+                    res(img)
+                }
+                img.onerror = function() {
+                    img.src = "固定值"
+                    rej(new Error(`cannot find ${url}`))
+                }
+                img.src = url;
+            })
+        }
+
+        //ajax异步
+        const getJSON = function(url) {
+            const promise = new Promise(function(resolve, reject) {
+                const handler = function() {
+                    if (this.readyState != 4) {
+                        return
+                    }
+                    if (this.statu == 200) {
+                        resolve(this.response)
+                    } else {
+                        reject(new Error(this.status))
+                    }
+                };
+                const client = new XMLHttpRequest()
+                client.open("GET", url);
+                client.onreadystatechange = handler;
+                client.responseType = "JSON";
+                client.setRequestHeader("Accep", "appication/json");
+                client.send();
+            });
+            return promise;
+        }
+        getJSON("/post.json").then(function(json) {
+            console.log(json);
+        }, function(error) {
+            console.log('出错了，' + error)
+        })
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>es6-测试</title>
+</head>
+<body>
+<script>
+    var obj = new Proxy({},{
+        get:function(target,key,receiver){
+            console.log(`getting ${key}!`);
+            return Reflect.get(target,key,receiver);
+
+        },
+        set:function(target,key,receiver){
+            console.log(`setting ${key}!`)
+            return Reflect.set(target,key,receiver);
+        }
+    });
+    obj.count =1;
+    ++obj.count;
+
+    var proxy = new Proxy({},{
+        get:function(target,prop){
+            return 35;
+        }
+    })
+    proxy.time;
+    proxy.name;
+    proxy.title;
+
+
+    var target = {};
+    var handle = {};
+    var proxy1 = new Proxy(target,handle);
+    proxy1.a = 'b';
+
+    console.log(target.a);
+
+    var object = {
+        proxy:new Proxy(target,handle)
+    }
+
+
+    var handler = {
+        get:function(target,name){
+            if(name==="prototype"){
+                return Object.prototype;
+            }
+            return 'Hello,'+name;
+        },
+        apply:function(target,thisBinding,args){
+            return args[0];
+        },
+        construtor:function(target,args){
+            return {value:args[1]}
+        }
+    }
+    var fproxy = new Proxy(function(x,y){
+        return x+y;
+
+    },handler);
+    console.log(fproxy(1,2));
+    console.log(new fproxy(1,2));
+    console.log(fproxy.prototype === Object.prototype);
+
+    console.log(fproxy.foo ==='hello,foo');
+
+    var person = {
+        name:'张三'
+    }
+    var proxy = new Proxy(person,{
+        get:function(target,property){
+            if(property in target){
+                return target[property];
+            }else {
+                //  throw new ReferenceError('Property  ')
+            }
+        }
+    })
+    console.log(proxy.name)
+    console.log(proxy.age)
+
+    function creatArray(...elements){
+        let handle = {
+            get:function(target,proxkey,receiver){
+                let index = Number(proxkey);
+                if(index<0){
+                    proxkey = String(target.length+index)
+
+                }
+                return Reflect.get(target,proxkey,receiver)
+            }
+        }
+        let target = [];
+        target.push(...elements);
+        return new Proxy(target,handle);
+    }
+
+    let arr = creatArray('a','b','c');
+    arr[-1];
+
+
+    const target0 = Object.defineProperties({},{
+        foo:{
+            value:123,
+            writeable:false,
+            configurable:false
+        }
+    })
+
+    const handle0 = {
+        get(target0,proxKey){
+            return 'abc'
+        }
+    }
+
+    const proxy2 = new Proxy(target0,handle0);
+    //proxy2.foo;
+
+
+    var handle1 =  {
+        has(target,key){
+            if(key[0] ==='_'){
+                return false;
+            }
+
+            return key in target;
+        }
+    }
+    var target1 = {
+        _prop:'foo',
+        prop:'foo'
+    }
+    var proxy3 = new Proxy(target1,handle1);
+    '_prop' in proxy3;
+
+
+    let stu1 = {
+        name:'张三',
+        score:59
+    }
+    let stu2 = {
+        name:'李四',
+        score:99
+    }
+    let hanlernew = {
+        has(target,prop){
+            if(prop === 'score' && target[prop]<60){
+                console.log(`${target.name} 不及格`);
+                return false;
+            }
+            return prop in target;
+        }
+    }
+    let oproxy1 = new Proxy(stu1,hanlernew);
+    let oproxy2 =  new Proxy(stu2,hanlernew);
+    'score' in oproxy1;
+    'score' in oproxy2;
+
+    for(let  a in oproxy1){
+        console.log(oproxy1[a]);
+    }
+
+    for(let b in oproxy2){
+        console.log(oproxy2[b])
+    }
+
+
+
+    var ps = new Proxy(function(){},{
+        construct:function(target,args){
+            console.log('called:'+args.join(', '));
+            return {
+                value:args[0]*10
+            }
+        }
+    })
+    console.log(new ps(1).value);
+
+
+    var handlernews = {
+        deleteProperty(target,key){
+            invariant(key,'delete');
+            return true;
+        }
+    }
+    function invariant(key,action){
+        if(key[0] ==='_'){
+            //throw new Error(`Invalid attempt to ${action} provite ${key}`);
+        }
+    }
+    var targetgo  = {
+        _prop:'foo'
+    }
+    var proxylist  = new Proxy(targetgo, handlernews);
+    delete proxylist._prop;
+
+
+    var newHandle =  {
+        defineProperty(target,key,descript){
+            return false;
+        }
+    }
+
+    var targetnews = {
+
+    }
+    var proxylistNew = new Proxy(targetnews,newHandle);
+    proxylistNew.foo='foos'
+    console.log(proxylistNew);
+</script>
+
+</body>
+</html>
